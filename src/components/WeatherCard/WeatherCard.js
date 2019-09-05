@@ -6,9 +6,9 @@ function WeatherCard(props) {
 
     return (
         <Card>
-            <CardContent className={classes.content}>
+            <CardContent className={props.isToday ? classes.contentSelected : classes.content}>
                 <h3 className={classes.title}>{props.day}</h3>
-                <img className={classes.img} src={props.icon}></img>
+                <img className={classes.img} src={props.icon} alt="Icon"></img>
                 <p className={classes.info}>
                     <span>{props.min}</span> {props.max}</p>
             </CardContent>
@@ -22,9 +22,17 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+    },
+    contentSelected: {
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     title: {
-        color: theme.palette.grey[600],
+        color: 'white',
         fontSize: '30',
         margin: '0'
     },
@@ -35,9 +43,9 @@ const useStyles = makeStyles(theme => ({
         margin: '0',
         fontSize: '20',
         fontWeight: 'bold',
-        color: theme.palette.grey[400],
+        color: theme.palette.grey[800],
         '& span': {
-            color: theme.palette.grey[600],
+            color: 'white',
         }
     },
 

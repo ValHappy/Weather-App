@@ -1,11 +1,11 @@
 import React from 'react';
 import WeatherCard from '../../components/WeatherCard/WeatherCard';
-import { Grid, CssBaseline } from '@material-ui/core';
+import { Grid, CssBaseline, makeStyles } from '@material-ui/core';
 
 const days = [
   {
     day: "Lun",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png",
+    icon: "https://ssl.gstatic.com/onebox/weather/48/rain_s_cloudy.png",
     min: "70°",
     max: "90°",
   },
@@ -17,7 +17,7 @@ const days = [
   },
   {
     day: "Mir",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png",
+    icon: "https://ssl.gstatic.com/onebox/weather/48/cloudy.png",
     min: "70°",
     max: "90°",
   },
@@ -29,13 +29,13 @@ const days = [
   },
   {
     day: "Vie",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png",
+    icon: "https://ssl.gstatic.com/onebox/weather/48/rain_s_cloudy.png",
     min: "70°",
     max: "90°",
   },
   {
     day: "Sáb",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png",
+    icon: "https://ssl.gstatic.com/onebox/weather/48/cloudy.png",
     min: "70°",
     max: "90°",
   },
@@ -47,27 +47,73 @@ const days = [
   }
 ];
 
+const useStyles = makeStyles(theme => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  content: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    color: theme.palette.grey[600],
+    fontSize: 40,
+    margin: '5'
+  }
+}));
+
 function App() {
-  return (<div>
-    <h1>Holi</h1>
 
-    <Grid container spacing={2}>
+  const classes = useStyles();
 
-      {days.map((item) =>
-        <Grid item md={1}>
-          <WeatherCard
-            day={item.day}
-            icon={item.icon}
-            min={item.min}
-            max={item.max}
-          />
-        </Grid>)}
+  function getDay() {
+    let day = new Date().getDay();
+    switch (day) {
+      case 1:
+        return "Lun";
+      case 2:
+        return "Mar";
+      case 3:
+        return "Mie";
+      case 4:
+        return "Jue";
+      case 5:
+        return "Vie";
+      case 6:
+        return "Sáb";
+      case 7:
+        return "Dom";
+      default:
+        return "";
+    }
+  }
+
+  return (
+    <div className={classes.container}>
+
+      <h1 className={classes.title}>Weather App</h1>
+
+      <Grid container spacing={2} className={classes.content}>
+
+        {days.map((item, index) =>
+          <Grid item md={1} key={index}>
+            <WeatherCard
+              day={item.day}
+              icon={item.icon}
+              min={item.min}
+              max={item.max}
+              isToday={item.day === getDay()}
+            />
+          </Grid>)}
 
 
-    </Grid>
+      </Grid>
 
-    <CssBaseline />
-  </div>
+      <CssBaseline />
+    </div>
   );
 }
 

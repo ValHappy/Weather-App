@@ -1,51 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import WeatherCard from '../../components/WeatherCard/WeatherCard';
-import { Grid, CssBaseline, makeStyles } from '@material-ui/core';
+import { Grid, CssBaseline, makeStyles, Button } from '@material-ui/core';
+import moment from 'moment';
 
-const days = [
-  {
-    day: "Lun",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/rain_s_cloudy.png",
-    min: "70°",
-    max: "90°",
-  },
-  {
-    day: "Mar",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png",
-    min: "70°",
-    max: "90°",
-  },
-  {
-    day: "Mir",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/cloudy.png",
-    min: "70°",
-    max: "90°",
-  },
-  {
-    day: "Jue",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png",
-    min: "70°",
-    max: "90°",
-  },
-  {
-    day: "Vie",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/rain_s_cloudy.png",
-    min: "70°",
-    max: "90°",
-  },
-  {
-    day: "Sáb",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/cloudy.png",
-    min: "70°",
-    max: "90°",
-  },
-  {
-    day: "Dom",
-    icon: "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png",
-    min: "70°",
-    max: "90°",
-  }
-];
+//import 'moment/local/es';
+//moment.local('es);
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -61,11 +20,44 @@ const useStyles = makeStyles(theme => ({
   title: {
     color: theme.palette.grey[600],
     fontSize: 40,
-    margin: '5'
+    padding: 0,
+    marginTop: 50,
+  },
+  button: {
+    margin: theme.spacing(1),
   }
 }));
 
+var today = new Date().getDate() - 4;
 function App() {
+
+  const [days, setDays] = React.useState([]);
+
+  const handleGetWeather = () => {
+    var promise = fetch('http://api.openweathermap.org//data/2.5/forecast?q=Cali,co&APPID=79596a3b0efba5c91d3af2f7826d7a07');
+
+    promise.then((info) => {
+      return info.json();
+    })
+      .then((info) => {
+        var list = info.list.filter((element, index) => {
+          //Filter si retorna true lo deja, si es false lo saca
+          return index % 8 == 0;
+        });
+
+        list = list.map((element, index, array) => {
+          return {
+            day: moment.unix(element.dt).format('ddd'),
+            icon: `https://openweathermap.org/img/wn/${element.weather[0].icon}.png`,
+            min: Math.round(element.main.temp_min - 273.15) + '°',
+            max: Math.round(element.main.temp_max - 273.15) + '°',
+          }
+        });
+
+        setDays(list);
+        console.log(days);
+      });
+  }
 
   const classes = useStyles();
 
@@ -73,19 +65,19 @@ function App() {
     let day = new Date().getDay();
     switch (day) {
       case 1:
-        return "Lun";
+        return "Mon";
       case 2:
-        return "Mar";
+        return "Tue";
       case 3:
-        return "Mie";
+        return "Wed";
       case 4:
-        return "Jue";
+        return "Thu";
       case 5:
-        return "Vie";
+        return "Fri";
       case 6:
-        return "Sáb";
+        return "Sat";
       case 7:
-        return "Dom";
+        return "Sun";
       default:
         return "";
     }
@@ -96,10 +88,14 @@ function App() {
 
       <h1 className={classes.title}>Weather App</h1>
 
+      <Button onClick={handleGetWeather} variant="contained" color="secondary" className={classes.button}>
+        Get Weather Info
+      </Button>
+
       <Grid container spacing={2} className={classes.content}>
 
-        {days.map((item, index) =>
-          <Grid item md={1} key={index}>
+        {days && days.map((item) =>
+          <Grid item md={1} key={item.day}>
             <WeatherCard
               day={item.day}
               icon={item.icon}
